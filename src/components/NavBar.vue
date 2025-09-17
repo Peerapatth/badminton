@@ -1,7 +1,7 @@
 <template>
   <nav class="fixed bottom-6 left-0 right-0 z-50 flex justify-center">
     <ul
-      class="flex justify-center items-center gap-6 px-4 py-3 rounded-full bg-white shadow-2xl border border-gray-200"
+      class="flex justify-center items-center gap-6 px-3 py-2 rounded-full bg-white shadow-2xl border border-gray-200"
     >
       <li>
         <RouterLink
@@ -12,7 +12,7 @@
           <Players class="w-6 h-6 transition-transform duration-200" />
           <span
             v-if="$route.path === '/players'"
-            class="text-xs mt-1 text-white font-semibold px-1.5 "
+            class="text-xs  text-white font-semibold px-1.5 "
           >
             Players
           </span>
@@ -27,7 +27,7 @@
           <Matches class="w-6 h-6 p-0.5 transition-transform duration-200" />
           <span
             v-if="$route.path === '/'"
-            class="text-xs mt-1 text-white font-semibold px-1.5 "
+            class="text-xs  text-white font-semibold px-1.5 "
           >
             Matches
           </span>
@@ -42,7 +42,7 @@
           <Profile class="w-6 h-6 transition-transform duration-200" />
           <span
             v-if="$route.path === '/profile'"
-            class="text-xs mt-1 text-white font-semibold px-1.5 "
+            class="text-xs  text-white font-semibold px-1.5 "
           >
             Profile
           </span>
@@ -64,6 +64,9 @@ const $route = useRoute();
 <style scoped>
 .active-icon {
   background: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   fill: #fff;
   color: white;
   border-radius: 9999px;
