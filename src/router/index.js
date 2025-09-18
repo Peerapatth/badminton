@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Main from "@/pages/index.vue";
-import Profile from "@/pages/Profile.vue";
 import Players from "@/pages/Players.vue";
 import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
@@ -11,12 +10,6 @@ const routes = [
     path: "/",
     name: "home",
     component: Main,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/profile",
-    name: "profile",
-    component: Profile,
     meta: { requiresAuth: true },
   },
   {

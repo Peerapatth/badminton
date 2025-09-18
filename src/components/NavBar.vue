@@ -6,13 +6,13 @@
       <li>
         <RouterLink
           to="/players"
-          class="flex  items-center justify-center transition-all duration-200"
-          :class="{ 'active-icon': $route.path === '/players' }"
+          class="flex items-center justify-center transition-all duration-200"
+          :class="{ 'active-icon': $route.path === '/players' && !showProfile }"
         >
           <Players class="w-6 h-6 transition-transform duration-200" />
           <span
-            v-if="$route.path === '/players'"
-            class="text-xs  text-white font-semibold px-1.5 "
+            v-if="$route.path === '/players' && !showProfile"
+            class="text-xs text-white font-semibold px-1.5"
           >
             Players
           </span>
@@ -21,44 +21,51 @@
       <li>
         <RouterLink
           to="/"
-          class="flex  items-center justify-center transition-all duration-200"
-          :class="{ 'active-icon': $route.path === '/' }"
+          class="flex items-center justify-center transition-all duration-200"
+          :class="{ 'active-icon': $route.path === '/' && !showProfile }"
         >
           <Matches class="w-6 h-6 p-0.5 transition-transform duration-200" />
           <span
-            v-if="$route.path === '/'"
-            class="text-xs  text-white font-semibold px-1.5 "
+            v-if="$route.path === '/' && !showProfile"
+            class="text-xs text-white font-semibold px-1.5"
           >
             Matches
           </span>
         </RouterLink>
       </li>
       <li>
-        <RouterLink
-          to="/profile"
-          class="flex  items-center justify-center transition-all duration-200"
-          :class="{ 'active-icon': $route.path === '/profile' }"
+        <button
+          @click="openProfile"
+          class="flex items-center justify-center transition-all duration-200 cursor-pointer"
+          :class="{ 'active-icon': showProfile }"
         >
-          <Profile class="w-6 h-6 transition-transform duration-200" />
+          <ProfileIcon class="w-6 h-6 transition-transform duration-200" />
           <span
-            v-if="$route.path === '/profile'"
-            class="text-xs  text-white font-semibold px-1.5 "
+            v-if="showProfile"
+            class="text-xs text-white font-semibold px-1.5"
           >
             Profile
           </span>
-        </RouterLink>
+        </button>
       </li>
     </ul>
+    <Profile v-if="showProfile" @close="showProfile = false" />
   </nav>
 </template>
 
 <script setup>
+import { ref } from "vue";
 import { RouterLink, useRoute } from "vue-router";
 import Players from "@/assets/elements/Players.vue";
 import Matches from "@/assets/elements/Matches.vue";
-import Profile from "@/assets/elements/Profile.vue";
+import ProfileIcon from "@/assets/elements/Profile.vue";
+import Profile from "@/components/popups/Profile.vue";
 
 const $route = useRoute();
+const showProfile = ref(false);
+function openProfile() {
+  showProfile.value = true;
+}
 </script>
 
 <style scoped>
@@ -71,7 +78,7 @@ const $route = useRoute();
   color: white;
   border-radius: 9999px;
   box-shadow: 0 4px 16px 0 #2563eb33;
-  padding:6px 8px;
+  padding: 6px 8px;
   transform: scale(1.1);
   transition: background 0.2s, transform 0.2s;
 }
