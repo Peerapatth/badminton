@@ -1,28 +1,78 @@
 <template>
-  <nav class="fixed bottom-0 left-0 right-0 z-50">
-    <ul class="bg-white/90 border border-e-red-500 backdrop-blur-md rounded-t-2xl flex justify-center gap-6 px-6 py-2 shadow-lg">
+  <nav class="fixed bottom-6 left-0 right-0 z-50 flex justify-center">
+    <ul
+      class="flex justify-center items-center gap-6 px-3 py-2 rounded-full bg-white shadow-2xl border border-gray-200"
+    >
       <li>
-        <a href="#home" class="flex flex-col items-center text-gray-700 hover:text-blue-500">
-          <span class="text-xl">🏠</span>
-          <span class="text-xs">Home</span>
-        </a>
+        <RouterLink
+          to="/players"
+          class="flex  items-center justify-center transition-all duration-200"
+          :class="{ 'active-icon': $route.path === '/players' }"
+        >
+          <Players class="w-6 h-6 transition-transform duration-200" />
+          <span
+            v-if="$route.path === '/players'"
+            class="text-xs  text-white font-semibold px-1.5 "
+          >
+            Players
+          </span>
+        </RouterLink>
       </li>
       <li>
-        <a href="#games" class="flex flex-col items-center text-gray-700 hover:text-blue-500">
-          <span class="text-xl">🏸</span>
-          <span class="text-xs">Games</span>
-        </a>
+        <RouterLink
+          to="/"
+          class="flex  items-center justify-center transition-all duration-200"
+          :class="{ 'active-icon': $route.path === '/' }"
+        >
+          <Matches class="w-6 h-6 p-0.5 transition-transform duration-200" />
+          <span
+            v-if="$route.path === '/'"
+            class="text-xs  text-white font-semibold px-1.5 "
+          >
+            Matches
+          </span>
+        </RouterLink>
       </li>
       <li>
-        <a href="#profile" class="flex flex-col items-center text-gray-700 hover:text-blue-500">
-          <span class="text-xl">👤</span>
-          <span class="text-xs">Profile</span>
-        </a>
+        <RouterLink
+          to="/profile"
+          class="flex  items-center justify-center transition-all duration-200"
+          :class="{ 'active-icon': $route.path === '/profile' }"
+        >
+          <Profile class="w-6 h-6 transition-transform duration-200" />
+          <span
+            v-if="$route.path === '/profile'"
+            class="text-xs  text-white font-semibold px-1.5 "
+          >
+            Profile
+          </span>
+        </RouterLink>
       </li>
     </ul>
   </nav>
 </template>
 
-<script setup></script>
+<script setup>
+import { RouterLink, useRoute } from "vue-router";
+import Players from "@/assets/elements/Players.vue";
+import Matches from "@/assets/elements/Matches.vue";
+import Profile from "@/assets/elements/Profile.vue";
 
-<style scoped></style>
+const $route = useRoute();
+</script>
+
+<style scoped>
+.active-icon {
+  background: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  fill: #fff;
+  color: white;
+  border-radius: 9999px;
+  box-shadow: 0 4px 16px 0 #2563eb33;
+  padding:6px 8px;
+  transform: scale(1.1);
+  transition: background 0.2s, transform 0.2s;
+}
+</style>

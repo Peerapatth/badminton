@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full relative">
-    <div class="p-4 md:p-6 absolute inset-0">
+    <div class="w-full p-4 md:p-6 absolute inset-0 flex justify-center items-center" >
       <NavBar />
     </div>
     <slot />
