@@ -1,11 +1,18 @@
 <template>
-  <Landing>
+  <component :is="layoutComponent">
     <router-view />
-  </Landing>
+  </component>
 </template>
 
 <script setup>
-import Landing from '@/layouts/Apps.vue'
+import { computed } from "vue";
+import { useRoute } from "vue-router";
+import Landing from "@/layouts/Apps.vue";
+
+const route = useRoute();
+const layoutComponent = computed(() =>
+  route.name === "login" || route.name === "register" ? "div" : Landing
+);
 </script>
 
 <style lang="scss" scoped>
