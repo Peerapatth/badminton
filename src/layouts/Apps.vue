@@ -1,9 +1,9 @@
 <template>
   <div class="w-full h-full relative">
-    <div class="w-full p-4 md:p-6 flex justify-center items-center">
+    <div class="absolute p-4 md:p-6 flex justify-center items-center">
       <NavBar />
     </div>
-    <slot />
+    <slot class="w-full h-full relative"/>
   </div>
 </template>
 

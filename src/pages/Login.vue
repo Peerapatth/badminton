@@ -83,7 +83,7 @@ const login = async () => {
       name: userData.name,
       level: userData.level || "",
     });
-
+    authStore.setAccessToken(userDoc.id);
     router.push("/");
   } catch (e) {
     error.value = "Login failed";
