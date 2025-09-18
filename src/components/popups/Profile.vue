@@ -34,6 +34,13 @@
                 <span class="font-normal">{{ user.username }}</span>
               </p>
             </div>
+            <div class="w-full h-[1px] bg-gray-200 my-1"></div>
+            <button
+              @click="handleLogout"
+              class="w-full mt-2 bg-white border border-gray-200 px-4 py-2 rounded-full text-base font-semibold cursor-pointer hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-colors duration-200"
+          >
+              Logout
+            </button>
           </div>
           <div v-else>
             <p class="text-gray-500">No user data found.</p>
@@ -50,4 +57,10 @@ import Close from "@/assets/elements/Close.vue";
 const authStore = useAuthStore();
 const user = authStore.userData;
 const emit = defineEmits(["close"]);
+
+function handleLogout() {
+  authStore.logout();
+  emit("close");
+  window.location.reload(); 
+}
 </script>

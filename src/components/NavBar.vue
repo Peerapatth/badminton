@@ -36,7 +36,7 @@
       <li>
         <button
           @click="openProfile"
-          class="flex items-center justify-center transition-all duration-200"
+          class="flex items-center justify-center transition-all duration-200 cursor-pointer"
           :class="{ 'active-icon': showProfile }"
         >
           <ProfileIcon class="w-6 h-6 transition-transform duration-200" />

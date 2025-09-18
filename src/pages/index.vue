@@ -26,6 +26,7 @@
       v-else
       class="w-full h-full flex flex-col gap-4 p-4 sm:p-6 rounded-xl bg-white border border-gray-200"
     >
+          <Matches />
       <div
         class="w-full flex flex-col gap-4 p-4 sm:p-6 rounded-xl bg-white border border-gray-200"
       >
@@ -101,6 +102,7 @@
 import { ref, onMounted } from "vue";
 import { db } from "@/firebase";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
+import Matches from "@/components/Matches.vue";
 
 const loading = ref(false);
 const activePlayers = ref([]);
