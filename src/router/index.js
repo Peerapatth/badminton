@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Main from "@/pages/index.vue";
 import Profile from "@/pages/Profile.vue";
+import Players from "@/pages/Players.vue";
 import Login from "@/pages/Login.vue";
 import Register from "@/pages/Register.vue";
 import { useAuthStore } from "@/stores/auth";
@@ -10,11 +11,18 @@ const routes = [
     path: "/",
     name: "home",
     component: Main,
+    meta: { requiresAuth: true },
   },
   {
     path: "/profile",
     name: "profile",
     component: Profile,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: "/players",
+    name: "players",
+    component: Players,
     meta: { requiresAuth: true },
   },
   {

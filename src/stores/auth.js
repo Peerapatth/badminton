@@ -5,7 +5,8 @@ export const useAuthStore = defineStore("auth", {
     userData: {
       id: null,
       username: null,
-      role: null,
+      name: null,
+      level: null,
     },
     accessToken: null,
     logged_in: false, 
@@ -15,13 +16,19 @@ export const useAuthStore = defineStore("auth", {
       this.userData = {
         id: null,
         username: null,
-        role: null,
+        name: null,
+        level: null,
       };
       this.accessToken = null;
       this.logged_in = false;
     },
     setUserData(data) {
-      this.userData = data;
+      this.userData = {
+        id: data.id || null,
+        username: data.username || null,
+        name: data.name || null,
+        level: data.level || null,
+      };
       this.logged_in = true;
     },
     setAccessToken(token) {

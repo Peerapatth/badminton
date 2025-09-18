@@ -6,9 +6,9 @@
     >
       <h2 class="text-xl font-bold mb-4 text-blue-600">Login</h2>
       <input
-        v-model="email"
-        type="email"
-        placeholder="Email"
+        v-model="username"
+        type="text"
+        placeholder="Username"
         class="mb-3 w-full p-2 border rounded"
         required
       />
@@ -21,9 +21,18 @@
       />
       <button
         type="submit"
-        class="w-full bg-blue-600 text-white py-2 rounded font-semibold"
+        class="w-full bg-blue-600 text-white py-2 rounded font-semibold mb-2"
+        :disabled="loading"
       >
-        Login
+        <span v-if="loading">Logging in...</span>
+        <span v-else>Login</span>
+      </button>
+      <button
+        type="button"
+        class="w-full bg-gray-200 text-blue-600 py-2 rounded font-semibold"
+        @click="goToRegister"
+      >
+        Register
       </button>
       <p v-if="error" class="text-red-500 mt-2">{{ error }}</p>
     </form>
@@ -32,27 +41,58 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { db } from "@/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { useAuthStore } from "@/stores/auth";
 
-const email = ref("");
+const router = useRouter();
+const authStore = useAuthStore();
+const username = ref("");
 const password = ref("");
 const error = ref("");
+const loading = ref(false);
 
 const login = async () => {
   error.value = "";
+  loading.value = true;
   try {
-    const response = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: email.value, password: password.value }),
-    });
-    const result = await response.json();
-    if (response.ok) {
-      window.location.href = "/";
-    } else {
-      error.value = result.message || "Login failed";
+    const q = query(
+      collection(db, "users"),
+      where("username", "==", username.value)
+    );
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      error.value = "User not found";
+      return;
     }
+
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+
+    if (userData.password !== password.value) {
+      error.value = "Incorrect password";
+      return;
+    }
+
+    authStore.logged_in = true;
+    authStore.setUserData({
+      id: userDoc.id,
+      username: userData.username,
+      name: userData.name,
+      level: userData.level || "",
+    });
+
+    router.push("/");
   } catch (e) {
-    error.value = "Network error";
+    error.value = "Login failed";
+  } finally {
+    loading.value = false;
   }
+};
+
+const goToRegister = () => {
+  router.push("/register");
 };
 </script>
