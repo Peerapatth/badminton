@@ -1,42 +1,60 @@
 <template>
-  <div class="flex justify-center items-center min-h-screen">
-    <form
-      @submit.prevent="login"
-      class="bg-white p-8 rounded shadow max-w-xs w-full"
+  <teleport to="body">
+    <div
+      class="fixed inset-0 flex items-center justify-center bg-black/30 z-50 p-6"
     >
-      <h2 class="text-xl font-bold mb-4 text-blue-600">Login</h2>
-      <input
-        v-model="username"
-        type="text"
-        placeholder="Username"
-        class="mb-3 w-full p-2 border rounded"
-        required
-      />
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Password"
-        class="mb-3 w-full p-2 border rounded"
-        required
-      />
-      <button
-        type="submit"
-        class="w-full bg-blue-600 text-white py-2 rounded font-semibold mb-2"
-        :disabled="loading"
-      >
-        <span v-if="loading">Logging in...</span>
-        <span v-else>Login</span>
-      </button>
-      <button
-        type="button"
-        class="w-full bg-gray-200 text-blue-600 py-2 rounded font-semibold"
-        @click="goToRegister"
-      >
-        Register
-      </button>
-      <p v-if="error" class="text-red-500 mt-2">{{ error }}</p>
-    </form>
-  </div>
+      <div class="bg-white rounded-xl shadow-xl p-6 w-full max-w-xs relative">
+        <div class="flex flex-col mb-4">
+          <div class="flex justify-between items-center gap-4">
+            <h3 class="text-lg font-semibold">Login</h3>
+          </div>
+          <div class="text-sm text-gray-500">
+            <span>Enter your credentials.</span>
+          </div>
+        </div>
+        <form @submit.prevent="login" class="flex flex-col gap-2">
+          <label for="username" class="text-xs text-gray-500">Username</label>
+          <input
+            v-model="username"
+            type="text"
+            placeholder="Username"
+            class="p-2 border border-gray-200 rounded text-sm"
+            required
+          />
+          <label for="password" class="text-xs text-gray-500">Password</label>
+          <input
+            v-model="password"
+            type="password"
+            placeholder="Password"
+            class="p-2 border border-gray-200 rounded text-sm"
+            required
+          />
+          <div class="w-full h-[1px] bg-gray-200 my-1"></div>
+
+          <button
+            type="submit"
+            class="bg-white hover:bg-gray-100 border border-gray-200 px-4 py-2 rounded-full text-base font-semibold cursor-pointer"
+            :disabled="loading"
+          >
+            <span v-if="loading">Logging in...</span>
+            <span v-else>Login</span>
+          </button>
+          <button
+            type="button"
+            class="w-full text-[14px] font-semibold transition-colors duration-200"
+          >
+            <span class="text-sm font-normal text-gray-500"
+              >Don't have an account?
+            </span>
+            <span @click="goToRegister" class="font-medium cursor-pointer"
+              >Register</span
+            >
+          </button>
+          <p v-if="error" class="text-red-500 mt-2">{{ error }}</p>
+        </form>
+      </div>
+    </div>
+  </teleport>
 </template>
 
 <script setup>
@@ -45,6 +63,7 @@ import { useRouter } from "vue-router";
 import { db } from "@/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { useAuthStore } from "@/stores/auth";
+import Close from "@/assets/elements/Close.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -95,4 +114,10 @@ const login = async () => {
 const goToRegister = () => {
   router.push("/register");
 };
+
+const goHome = () => {
+  router.push("/");
+};
 </script>
+
+<style lang="scss" scoped></style>

@@ -20,17 +20,19 @@
           </div>
         </div>
         <form @submit.prevent="submitPlayer" class="flex flex-col gap-2">
+          <label for="name" class="text-xs text-gray-500">Name</label>
           <input
             v-model="form.name"
             type="text"
             placeholder="Name"
-            class="p-2 border border-gray-200 rounded"
+            class="p-2 border border-gray-200 rounded text-sm"
             required
           />
+          <label for="gender" class="text-xs text-gray-500">Gender</label>
           <div class="p-2 border border-gray-200 rounded">
             <select
               v-model="form.gender"
-              class="rounded w-full outline-none cursor-pointer"
+              class="rounded w-full outline-none cursor-pointer text-sm"
               required
             >
               <option value="" disabled>Select Gender</option>
@@ -38,10 +40,11 @@
               <option value="female">Female</option>
             </select>
           </div>
+          <label for="level" class="text-xs text-gray-500">Level</label>
           <div class="p-2 border border-gray-200 rounded">
             <select
               v-model="form.level"
-              class="rounded w-full outline-none cursor-pointer"
+              class="rounded w-full outline-none cursor-pointer text-sm"
               required
             >
               <option value="" disabled>Select Level</option>
