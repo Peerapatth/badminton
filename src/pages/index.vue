@@ -7,6 +7,7 @@
         :activePlayers="activePlayers"
         @updatePlayingStatus="handlePlayingStatus"
       />
+      <Matches />
       <div
         class="w-full flex flex-col gap-4 p-4 sm:p-6 rounded-xl bg-white border border-gray-200"
       >
@@ -28,7 +29,9 @@
               <tr>
                 <th scope="col" class="px-6 py-3">Name</th>
                 <th scope="col" class="px-6 py-3 text-center">Level</th>
-                <th scope="col" class="px-6 py-3 text-center">Playing Status</th>
+                <th scope="col" class="px-6 py-3 text-center">
+                  Playing Status
+                </th>
                 <th scope="col" class="px-6 py-3 text-center">Matches</th>
                 <th scope="col" class="px-6 py-3 text-center">Win/Lose</th>
               </tr>
@@ -68,7 +71,6 @@
           No active players found.
         </div>
       </div>
-      <Matches />
     </div>
   </div>
 </template>
