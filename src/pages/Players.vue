@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full min-h-screen flex justify-center items-center p-3">
-    <div v-if="loading" class="flex justify-center items-center h-full">
+  <div class="w-full min-h-screen flex justify-center items-start p-3">
+    <div v-if="loading" class="flex justify-center items-center h-screen">
       <svg
         class="animate-spin h-8 w-8 text-blue-600"
         xmlns="http://www.w3.org/2000/svg"
@@ -85,8 +85,8 @@
             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
                 <th scope="col" class="px-6 py-3">Name</th>
-                <th scope="col" class="px-6 py-3">Matches</th>
-                <th scope="col" class="px-6 py-3">Price</th>
+                <th scope="col" class="px-6 py-3 text-center">Matches</th>
+                <th scope="col" class="px-6 py-3 text-center">Price</th>
                 <th scope="col" class="px-6 py-3">Payment</th>
               </tr>
             </thead>
@@ -102,14 +102,20 @@
                 >
                   {{ player.name }}
                 </th>
-                <td class="px-6 py-2">
+                <td class="px-6 py-2  text-center">
                   {{ getDailyStat(player, "matches") }}
                 </td>
-                <td class="px-6 py-2">
+                <td class="px-6 py-2  text-center">
                   {{ getDailyStat(player, "price") }}
                 </td>
                 <td class="px-6 py-2">
-                  <div class="p-2 border border-gray-200 rounded-lg w-38">
+                  <div class="p-2 border rounded-lg min-w-38"
+                    :class="{
+                      'border-gray-200': getDailyStat(player, 'payment') === 'not_paid',
+                      'border-green-700': getDailyStat(player, 'payment') === 'promptpay',
+                      'border-green-700 ': getDailyStat(player, 'payment') === 'cash',
+                    }"
+                  >
                     <select
                       :value="getDailyStat(player, 'payment')"
                       @change="updatePayment(player, $event.target.value)"
@@ -167,12 +173,12 @@
                 >
                   {{ player.name }}
                 </th>
-                <td class="px-6 py-2">
-                  <div class="p-2 border border-gray-200 rounded-lg w-38">
+                <td class="px-6 py-2 ">
+                  <div class="p-2 border border-gray-200 rounded-lg min-w-38">
                     <select
                       v-model="player.level"
                       @change="updateLevel(player, $event.target.value)"
-                      class="rounded w-32 outline-none cursor-pointer"
+                      class="rounded w-full outline-none cursor-pointer"
                     >
                       <option value="beginner">Beginner</option>
                       <option value="intermediate">Intermediate</option>
@@ -182,7 +188,7 @@
                 </td>
                 <td class="px-6 py-2">{{ player.gender }}</td>
                 <td class="px-6 py-2">
-                  <div class="p-2 border border-gray-200 rounded-lg w-38">
+                  <div class="p-2 border border-gray-200 rounded-lg min-w-38">
                     <select
                       :value="
                         isActiveOnSelectedDate(player) ? 'active' : 'inactive'
@@ -359,7 +365,13 @@ const updateStatus = async (player, newStatus) => {
   let dailyStats = player.dailyStats || {};
   const key = getDateKey(selectedDate.value);
   if (!dailyStats[key]) {
-    dailyStats[key] = { matches: 0, price: 0, payment: "not_paid" };
+    dailyStats[key] = {
+      matches: 0,
+      price: 0,
+      payment: "not_paid",
+      win: 0,
+      lose: 0,
+    };
   }
 
   if (newStatus === "active") {
@@ -383,6 +395,7 @@ const updateStatus = async (player, newStatus) => {
   await updateDoc(playerDoc, {
     activeDates,
     dailyStats,
+    status: newStatus,
   });
   await fetchPlayers();
 };
@@ -392,7 +405,13 @@ const updatePayment = async (player, value) => {
   let dailyStats = player.dailyStats || {};
   const key = getDateKey(selectedDate.value);
   if (!dailyStats[key]) {
-    dailyStats[key] = { matches: 0, price: 0, payment: "not_paid" };
+    dailyStats[key] = {
+      matches: 0,
+      price: 0,
+      payment: "not_paid",
+      win: 0,
+      lose: 0,
+    };
   }
   dailyStats[key].payment = value;
 

@@ -1,85 +1,57 @@
 <template>
-  <div class="flex flex-col gap-6">
-    <h2 class="text-lg font-bold mb-4">Badminton Courts</h2>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-      <div
-        v-for="(court, idx) in courts"
-        :key="court.id"
-        class="bg-white border rounded-xl shadow p-4 overflow-auto"
-      >
-        <h3 class="text-base font-semibold mb-2">Court {{ idx + 1 }}</h3>
-        <div class="flex flex-col gap-2">
-          <div v-for="(team, tIdx) in [0,1]" :key="tIdx" class="flex gap-2 mb-2">
-            <div v-for="(player, pIdx) in court.teams[team]" :key="pIdx" class="flex items-center gap-2">
-              <select
-                v-model="court.teams[team][pIdx]"
-                class="border rounded px-2 py-1 text-sm"
-              >
-                <option value="">Select Player</option>
-                <option
-                  v-for="p in activePlayers"
-                  :key="p.id"
-                  :value="p.id"
-                  :disabled="isPlayerAssigned(p.id)"
-                >
-                  {{ p.name }}
-                </option>
-              </select>
-              <select
-                v-model="court.playerStatus[court.teams[team][pIdx]]"
-                class="border rounded px-2 py-1 text-xs"
-                :disabled="!court.teams[team][pIdx]"
-              >
-                <option value="">Status</option>
-                <option value="win">Win</option>
-                <option value="lose">Lose</option>
-              </select>
-            </div>
-          </div>
-          <div class="mt-2">
-            <button
-              class="bg-gray-200 text-gray-700 px-4 py-1 rounded-full text-sm font-semibold"
-              @click="resetCourt(idx)"
-            >
-              Reset
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div>
+    <h2>Matches History</h2>
+    <ul>
+      <li v-for="match in matches" :key="match.id">
+        <strong>{{ match.date }}</strong> &mdash;
+        <span v-for="(team, idx) in match.teams" :key="idx">
+          <span>
+            {{ team.players.map((pid) => playerNames[pid] || pid).join(" & ") }}
+            <span v-if="idx === 0"> vs </span>
+          </span>
+        </span>
+        <span>
+          ({{ match.teams[0].result === "win" ? "Win" : "Lose" }} /
+          {{ match.teams[1].result === "lose" ? "Lose" : "Win" }})
+        </span>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-const props = defineProps({
-  activePlayers: {
-    type: Array,
-    required: true,
-  },
+import { ref, onMounted } from "vue";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
+
+const matches = ref([]);
+const playerNames = ref({});
+
+onMounted(async () => {
+  const matchesSnapshot = await getDocs(collection(db, "matches"));
+  matches.value = matchesSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+
+  const playersSnapshot = await getDocs(collection(db, "players"));
+  playersSnapshot.forEach((doc) => {
+    playerNames.value[doc.id] = doc.data().name;
+  });
 });
-
-const courts = ref([
-  {
-    id: 1,
-    teams: [["", ""], ["", ""]],
-    playerStatus: {},
-  },
-  { id: 2, teams: [["", ""], ["", ""]], playerStatus: {} },
-  { id: 3, teams: [["", ""], ["", ""]], playerStatus: {} },
-  { id: 4, teams: [["", ""], ["", ""]], playerStatus: {} },
-]);
-
-function isPlayerAssigned(playerId) {
-  return courts.value.some(court =>
-    court.teams.flat().includes(playerId)
-  );
-}
-
-function resetCourt(idx) {
-  courts.value[idx].teams = [["", ""], ["", ""]];
-  courts.value[idx].playerStatus = {};
-}
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+h2 {
+  margin-bottom: 1rem;
+}
+ul {
+  list-style: none;
+  padding: 0;
+}
+li {
+  margin-bottom: 0.5rem;
+  background: #f5f5f5;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+</style>
