@@ -1,6 +1,21 @@
 <template>
   <div class="flex flex-col">
-    <h2 class="text-base font-medium">Badminton Courts</h2>
+    <div class="flex flex-col">
+      <h2 class="text-base font-medium">Badminton Courts</h2>
+      <div class="text-sm">
+        Today :
+        <span class="text-sm text-gray-500">
+          {{
+            new Date().toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "long",
+              year: "numeric",
+            })
+          }}
+        </span>
+      </div>
+    </div>
+
     <div class="w-full h-[1px] bg-gray-200 mt-2"></div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
       <div
@@ -25,10 +40,9 @@
               class="mb-1 flex items-center gap-2"
             >
               <div v-if="player" class="p-2 border border-gray-200 rounded-lg">
-                <span class="text-sm font-semibold">
+                <span class="text-sm font-medium">
                   {{ getPlayerName(player) }}
                 </span>
-                
               </div>
               <div v-else class="p-1 border border-gray-200 rounded">
                 <select
@@ -66,10 +80,10 @@
               class="mb-1 flex items-center gap-2"
             >
               <div v-if="player" class="p-2 border border-gray-200 rounded-lg">
-                <span class="text-sm font-semibold">
+                <span class="text-sm font-medium">
                   {{ getPlayerName(player) }}
                 </span>
-          
+
                 <button
                   class="bg-red-100 text-red-600 px-2 py-1 rounded text-xs font-semibold cursor-pointer ml-2"
                   @click="clearPlayer(idx, 0, pIdx)"
@@ -100,7 +114,12 @@
               class="mt-2"
             >
               <span
-                class="bg-green-600 text-white px-2 py-1 rounded text-xs font-semibold"
+                class="text-white px-2 py-1 rounded text-xs font-semibold"
+                :class="
+                  match.teams[0].result === 'win'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700'
+                "
               >
                 {{ court.teams[0].result }}
               </span>
@@ -120,8 +139,11 @@
               :key="pIdx"
               class="mb-1 flex items-center gap-2"
             >
-              <div v-if="player" class="p-2 border border-gray-200 rounded-lg ml-2">
-                <span class="text-sm font-semibold">
+              <div
+                v-if="player"
+                class="p-2 border border-gray-200 rounded-lg ml-2"
+              >
+                <span class="text-sm font-medium">
                   {{ getPlayerName(player) }}
                 </span>
               </div>
@@ -164,7 +186,7 @@
                 v-if="player"
                 class="p-2 border border-gray-200 rounded-lg flex items-center gap-2"
               >
-                <span class="text-sm font-semibold">
+                <span class="text-sm font-medium">
                   {{ getPlayerName(player) }}
                 </span>
                 <button
@@ -197,7 +219,12 @@
               class="mt-2"
             >
               <span
-                class="bg-green-600 text-white px-2 py-1 rounded text-xs font-semibold"
+                class="text-white px-2 py-1 rounded text-xs font-semibold"
+                :class="
+                  match.teams[1].result === 'win'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700'
+                "
               >
                 {{ court.teams[1].result }}
               </span>
@@ -379,15 +406,15 @@ async function updatePlayersDailyStats(teams) {
           typeof statsForToday.price === "number" ? statsForToday.price : 0;
         const newPrice = prevPrice + getMatchPrice(matchesCount);
         const winCount =
-          typeof statsForToday.wins === "number" ? statsForToday.wins : 0;
+          typeof statsForToday.win === "number" ? statsForToday.win : 0;
         const loseCount =
-          typeof statsForToday.loses === "number" ? statsForToday.loses : 0;
+          typeof statsForToday.lose === "number" ? statsForToday.lose : 0;
         await updateDoc(playerRef, {
           [`dailyStats.${todayKey}.matches`]: newMatchesCount,
           [`dailyStats.${todayKey}.price`]: newPrice,
-          [`dailyStats.${todayKey}.wins`]:
+          [`dailyStats.${todayKey}.win`]:
             result === "win" ? winCount + 1 : winCount,
-          [`dailyStats.${todayKey}.loses`]:
+          [`dailyStats.${todayKey}.lose`]:
             result === "lose" ? loseCount + 1 : loseCount,
         });
       }
