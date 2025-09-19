@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-screen flex justify-center items-center p-3">
+  <div class="w-full min-h-screen flex justify-center items-center p-3">
     <div v-if="loading" class="flex justify-center items-center h-full">
       <svg
         class="animate-spin h-8 w-8 text-blue-600"
@@ -67,9 +67,9 @@
           <div class="flex gap-2">
             <button
               @click="showUnpaid = !showUnpaid"
-              class="border border-gray-200 px-4 py-2 rounded-full font-medium cursor-pointer"
+              class="border border-gray-200 px-4 py-2 rounded-full font-medium cursor-pointer text-sm"
             >
-              {{ showUnpaid ? "All" : "Show Unpaid" }}
+              {{ showUnpaid ? "All" : "Unpaid" }}
             </button>
             <button
               @click="showSelectDate = true"
@@ -139,7 +139,7 @@
           <h2 class="text-base font-medium">All Players</h2>
           <button
             @click="showInactiveOnly = !showInactiveOnly"
-            class="border border-gray-200 px-4 py-2 rounded-full font-medium cursor-pointer"
+            class="border border-gray-200 px-4 py-2 rounded-full font-medium cursor-pointer text-sm"
           >
             {{ showInactiveOnly ? "All Players" : "Only Inactive" }}
           </button>

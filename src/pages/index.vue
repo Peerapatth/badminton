@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-screen flex justify-center items-center p-3">
+  <div class="w-full min-h-screen flex justify-center items-center p-3">
     <div v-if="loading" class="flex justify-center items-center h-full">
       <svg
         class="animate-spin h-8 w-8 text-blue-600"
@@ -33,18 +33,6 @@
         <div class="flex justify-between items-center gap-4">
           <div class="flex flex-col">
             <h2 class="text-base font-medium">Active Players</h2>
-            <div class="text-sm">
-              Today :
-              <span class="text-sm text-gray-500">
-                {{
-                  new Date().toLocaleDateString("en-GB", {
-                    day: "2-digit",
-                    month: "long",
-                    year: "numeric",
-                  })
-                }}
-              </span>
-            </div>
           </div>
           <div class="flex items-center flex-col">
             <h3 class="text-sm text-gray-500 text-end">Total</h3>
@@ -58,7 +46,6 @@
               <tr>
                 <th scope="col" class="px-6 py-3">Name</th>
                 <th scope="col" class="px-6 py-3">Level</th>
-                <th scope="col" class="px-6 py-3">Gender</th>
                 <th scope="col" class="px-6 py-3">Matches</th>
               </tr>
             </thead>
@@ -76,9 +63,6 @@
                 </th>
                 <td class="px-6 py-2">
                   {{ player.level }}
-                </td>
-                <td class="px-6 py-2">
-                  {{ player.gender }}
                 </td>
                 <td class="px-6 py-2">
                   {{ getDailyStat(player, "matches") }}
