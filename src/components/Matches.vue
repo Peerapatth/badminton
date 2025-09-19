@@ -52,20 +52,18 @@
 
 <script setup>
 import { ref } from "vue";
-
-// Replace with your actual activePlayers source
-const activePlayers = ref([
-  // Example: { id: "1", name: "Alice" }, { id: "2", name: "Bob" }
-]);
+const props = defineProps({
+  activePlayers: {
+    type: Array,
+    required: true,
+  },
+});
 
 const courts = ref([
   {
     id: 1,
-    teams: [
-      ["", ""], // team 1 (2 players)
-      ["", ""], // team 2 (2 players)
-    ],
-    playerStatus: {}, // { playerId: "win" | "lose" }
+    teams: [["", ""], ["", ""]],
+    playerStatus: {},
   },
   { id: 2, teams: [["", ""], ["", ""]], playerStatus: {} },
   { id: 3, teams: [["", ""], ["", ""]], playerStatus: {} },

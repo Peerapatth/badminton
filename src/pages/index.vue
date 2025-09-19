@@ -26,7 +26,7 @@
       v-else
       class="w-full h-full flex flex-col gap-4 p-4 sm:p-6 rounded-xl bg-white border border-gray-200"
     >
-    <Matches />
+      <Matches :activePlayers="activePlayers" />
       <div
         class="w-full flex flex-col gap-4 p-4 sm:p-6 rounded-xl bg-white border border-gray-200"
       >
@@ -36,7 +36,9 @@
           </div>
           <div class="flex items-center flex-col">
             <h3 class="text-sm text-gray-500 text-end">Total</h3>
-            <h2 class="text-base font-semibold text-end">{{ activePlayers.length }}</h2>
+            <h2 class="text-base font-semibold text-end">
+              {{ activePlayers.length }}
+            </h2>
           </div>
         </div>
         <div class="w-full h-[1px] bg-gray-200"></div>
