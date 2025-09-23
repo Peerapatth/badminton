@@ -82,7 +82,7 @@
               <template v-else>
                 <select
                   v-model="team1Player1"
-                  class="rounded max-w-60 outline-none cursor-pointer text-sm"
+                  class="rounded max-w-60 outline-none text-center cursor-pointer text-sm"
                 >
                   <option value="">Select Player</option>
                   <option v-for="p in activePlayers" :key="p.id" :value="p.id">
@@ -110,7 +110,7 @@
               <template v-else>
                 <select
                   v-model="team1Player2"
-                  class="rounded max-w-60 outline-none cursor-pointer text-sm"
+                  class="rounded max-w-60 outline-none text-center cursor-pointer text-sm"
                 >
                   <option value="">Select Player</option>
                   <option v-for="p in activePlayers" :key="p.id" :value="p.id">
@@ -144,7 +144,7 @@
               <template v-else>
                 <select
                   v-model="team2Player1"
-                  class="rounded max-w-60 outline-none cursor-pointer text-sm"
+                  class="rounded max-w-60 outline-none text-center cursor-pointer text-sm"
                 >
                   <option value="">Select Player</option>
                   <option v-for="p in activePlayers" :key="p.id" :value="p.id">
@@ -172,7 +172,7 @@
               <template v-else>
                 <select
                   v-model="team2Player2"
-                  class="rounded max-w-60 outline-none cursor-pointer text-sm"
+                  class="rounded max-w-60 outline-none text-center cursor-pointer text-sm"
                 >
                   <option value="">Select Player</option>
                   <option v-for="p in activePlayers" :key="p.id" :value="p.id">
