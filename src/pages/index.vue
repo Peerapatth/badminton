@@ -88,7 +88,7 @@ import {
 } from "firebase/firestore";
 import Matches from "@/components/Matches.vue";
 import Courts from "@/components/Courts.vue";
-import UpcomingMatches from "@/components/UpcomingMatches.vue";
+import UpcomingMatches from "@/components/Upcoming.vue";
 
 const loading = ref(false);
 const activePlayers = ref([]);

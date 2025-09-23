@@ -4,7 +4,6 @@
   >
     <h2 class="text-lg font-semibold text-gray-800">Upcoming Matches</h2>
     <div class="w-full h-[1px] bg-gray-200 -mt-4"></div>
-
     <ul
       v-if="upcomingMatches.length"
       class="grid grid-cols-1 md:grid-cols-2 gap-4"
@@ -12,28 +11,19 @@
       <li
         v-for="match in upcomingMatches"
         :key="match.id"
-        class="flex flex-col gap-2 mb-4 p-4 rounded-lg border border-gray-200 bg-yellow-50"
+        class="flex flex-col gap-2 mb-4 p-4 rounded-lg border border-gray-200"
       >
-        <div class="flex flex-col gap-1 text-base mt-2">
-          <div>
-            <span class="text-gray-700 font-semibold">Team 1:</span>
-            <span class="text-gray-600">
-              {{
-                match.teams[0].players
-                  .map((pid) => playerLabel(pid))
-                  .join(" & ")
-              }}
-            </span>
+        <div class="flex gap-2 justify-center mt-2">
+          <div class="px-2 py-1 rounded text-xs">
+            {{
+              match.teams[0].players.map((pid) => playerLabel(pid)).join(" \n ")
+            }}
           </div>
-          <div>
-            <span class="text-gray-700 font-semibold">Team 2:</span>
-            <span class="text-gray-600">
-              {{
-                match.teams[1].players
-                  .map((pid) => playerLabel(pid))
-                  .join(" & ")
-              }}
-            </span>
+          <span class="mx-2 text-gray-400 font-bold">vs</span>
+          <div class="px-2 py-1 rounded text-xs">
+            {{
+              match.teams[1].players.map((pid) => playerLabel(pid)).join(" \n")
+            }}
           </div>
         </div>
       </li>
