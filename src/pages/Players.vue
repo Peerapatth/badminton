@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full min-h-screen flex justify-center items-start p-3">
+  <div class="w-full min-h-screen bg-gray-100 flex justify-center items-start p-3">
     <div v-if="loading" class="flex justify-center items-center h-screen">
       <svg
         class="animate-spin h-8 w-8 text-blue-600"
