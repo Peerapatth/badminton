@@ -84,7 +84,7 @@
               <div v-else class="p-1 border border-gray-200 rounded">
                 <select
                   v-model="court.teams[0].players[pIdx]"
-                  class="rounded w-[120px] outline-none cursor-pointer text-sm"
+                  class="rounded w-[120px] outline-none text-center cursor-pointer text-sm"
                   @change="emitPlayingStatus"
                 >
                   <option value="">Select Player</option>
@@ -129,7 +129,7 @@
               <div v-else class="p-1 border border-gray-200 rounded">
                 <select
                   v-model="court.teams[0].players[pIdx]"
-                  class="rounded w-[120px] outline-none cursor-pointer text-sm"
+                  class="rounded w-[120px] outline-none text-center cursor-pointer text-sm"
                   @change="emitPlayingStatus"
                 >
                   <option value="">Select Player</option>
@@ -185,7 +185,7 @@
               <div v-else class="p-1 border border-gray-200 rounded">
                 <select
                   v-model="court.teams[1].players[pIdx]"
-                  class="rounded w-[120px] outline-none cursor-pointer text-sm"
+                  class="rounded w-[120px] outline-none text-center cursor-pointer text-sm"
                   @change="emitPlayingStatus"
                 >
                   <option value="">Select Player</option>
@@ -233,7 +233,7 @@
               <div v-else class="p-1 border border-gray-200 rounded">
                 <select
                   v-model="court.teams[1].players[pIdx]"
-                  class="rounded w-[120px] outline-none cursor-pointer text-sm"
+                  class="rounded w-[120px] outline-none text-center cursor-pointer text-sm"
                   @change="emitPlayingStatus"
                 >
                   <option value="">Select Player</option>

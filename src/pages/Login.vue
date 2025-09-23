@@ -50,7 +50,7 @@
               >Register</span
             >
           </button>
-          <p v-if="error" class="text-red-500 mt-2">{{ error }}</p>
+          <p v-if="error" class="text-red-500 mt-2 w-full text-center">{{ error }}</p>
         </form>
       </div>
     </div>
