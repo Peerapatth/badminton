@@ -7,6 +7,7 @@
         :activePlayers="activePlayers"
         @updatePlayingStatus="handlePlayingStatus"
       />
+      <UpcomingMatches />
       <Matches />
       <div
         class="w-full flex flex-col gap-4 p-4 sm:p-6 rounded-xl bg-white border border-gray-200"
@@ -87,6 +88,7 @@ import {
 } from "firebase/firestore";
 import Matches from "@/components/Matches.vue";
 import Courts from "@/components/Courts.vue";
+import UpcomingMatches from "@/components/UpcomingMatches.vue";
 
 const loading = ref(false);
 const activePlayers = ref([]);
