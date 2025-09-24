@@ -57,28 +57,6 @@
             </span>
           </div>
         </div>
-        <div class="flex gap-2 justify-center mt-2">
-          <span
-            class="px-2 py-1 rounded text-xs font-semibold"
-            :class="
-              match.teams[0].result === 'win'
-                ? 'bg-green-100 text-green-700'
-                : 'bg-red-100 text-red-700'
-            "
-          >
-            {{ match.teams[0].result === "win" ? "Win" : "Lose" }}
-          </span>
-          <span
-            class="px-2 py-1 rounded text-xs font-semibold"
-            :class="
-              match.teams[1].result === 'win'
-                ? 'bg-green-100 text-green-700'
-                : 'bg-red-100 text-red-700'
-            "
-          >
-            {{ match.teams[1].result === "win" ? "Win" : "Lose" }}
-          </span>
-        </div>
       </li>
     </ul>
     <div class="w-full h-[1px] bg-gray-200 -mt-4"></div>

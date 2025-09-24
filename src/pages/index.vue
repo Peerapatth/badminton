@@ -1,13 +1,16 @@
 <template>
-  <div class="w-full min-h-screen bg-gray-100 flex justify-center items-start p-3">
+  <div
+    class="w-full min-h-screen bg-gray-100 flex justify-center items-start p-3"
+  >
     <div
       class="w-full h-full flex flex-col gap-4 p-4 sm:p-6 rounded-xl bg-white border border-gray-200"
     >
       <Courts
+        ref="courtsRef"
         :activePlayers="activePlayers"
         @updatePlayingStatus="handlePlayingStatus"
       />
-      <UpcomingMatches />
+      <UpcomingMatches @addToCourt="handleAddToCourt" />
       <Matches />
       <div
         class="w-full flex flex-col gap-4 p-4 sm:p-6 rounded-xl bg-white border border-gray-200"
@@ -34,7 +37,6 @@
                   Playing Status
                 </th>
                 <th scope="col" class="px-6 py-3 text-center">Matches</th>
-                <th scope="col" class="px-6 py-3 text-center">Win/Lose</th>
               </tr>
             </thead>
             <tbody>
@@ -57,9 +59,6 @@
                 </td>
                 <td class="px-6 py-2 text-center">
                   {{ getDailyStat(player, "matches") }}
-                </td>
-                <td class="px-6 py-2 text-center">
-                  {{ getWinLoseSummary(player) }}
                 </td>
               </tr>
             </tbody>
@@ -93,6 +92,12 @@ import UpcomingMatches from "@/components/Upcoming.vue";
 const loading = ref(false);
 const activePlayers = ref([]);
 
+const courtsRef = ref(null);
+
+function handleAddToCourt(match) {
+  courtsRef.value?.addMatchToCourt(match);
+}
+
 function isActiveToday(player) {
   if (!player.activeDates || !Array.isArray(player.activeDates)) return false;
   const today = new Date().toDateString();
@@ -113,13 +118,6 @@ function getDailyStat(player, field) {
     : field === "payment"
     ? "not_paid"
     : 0;
-}
-
-function getWinLoseSummary(player) {
-  const key = getDateKey(new Date());
-  return player.dailyStats && player.dailyStats[key]
-    ? `${player.dailyStats[key].win} - ${player.dailyStats[key].lose}`
-    : "0 - 0";
 }
 
 async function handlePlayingStatus(assignedPlayerIds) {

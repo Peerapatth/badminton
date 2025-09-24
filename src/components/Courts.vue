@@ -36,7 +36,7 @@
             placeholder="No."
           />
           <button
-            class="px-2 py-1 rounded bg-white border border-gray-200 text-xs cursor-pointer hover:bg-green-600 hover:text-white transition"
+            class="px-4 py-2 rounded-full font-medium bg-white border border-gray-200 text-xs cursor-pointer hover:bg-green-600 hover:text-white transition"
             @click="addShuttlecock(idx)"
           >
             Add
@@ -66,9 +66,8 @@
         >
           <!-- Team 1 -->
           <div
-            class="absolute left-0 top-0 w-1/2 h-full flex flex-col justify-center items-center px-2 group cursor-pointer"
-            v-if="canShowWinButton(court, 0)"
-            @click="setTeamResult(idx, 0, 'win')"
+            class="absolute left-0 top-0 w-1/2 h-full flex flex-col justify-center items-center px-2 group"
+            v-if="canShowDoneButton(court, 0)"
           >
             <span class="font-semibold text-xs mb-2 text-gray-500">Team 1</span>
             <div
@@ -97,12 +96,6 @@
                   </option>
                 </select>
               </div>
-            </div>
-            <div
-              class="absolute inset-0 flex items-center justify-center bg-green-600 bg-opacity-80 opacity-0 group-hover:opacity-100 transition rounded-l-xl"
-              style="z-index: 10"
-            >
-              <span class="text-white text-lg font-bold">Win</span>
             </div>
           </div>
           <div
@@ -143,30 +136,14 @@
                 </select>
               </div>
             </div>
-            <div
-              v-if="court.teams[0].result && court.teams[0].result !== '-'"
-              class="mt-2"
-            >
-              <span
-                class="text-white px-2 py-1 rounded text-xs font-semibold"
-                :class="
-                  court.teams[0].result === 'win'
-                    ? 'bg-green-700'
-                    : 'bg-red-700'
-                "
-              >
-                {{ court.teams[0].result }}
-              </span>
-            </div>
           </div>
           <div
             class="absolute left-1/2 top-0 h-full w-1 border-l-2 border-green-700"
           ></div>
           <!-- Team 2 -->
           <div
-            class="absolute right-0 top-0 w-1/2 h-full flex flex-col justify-center items-center px-2 group cursor-pointer"
-            v-if="canShowWinButton(court, 1)"
-            @click="setTeamResult(idx, 1, 'win')"
+            class="absolute right-0 top-0 w-1/2 h-full flex flex-col justify-center items-center px-2 group"
+            v-if="canShowDoneButton(court, 1)"
           >
             <span class="font-semibold text-xs mb-2 text-gray-500">Team 2</span>
             <div
@@ -198,12 +175,6 @@
                   </option>
                 </select>
               </div>
-            </div>
-            <div
-              class="absolute inset-0 flex items-center justify-center bg-green-600 bg-opacity-80 opacity-0 group-hover:opacity-100 transition rounded-r-xl"
-              style="z-index: 10"
-            >
-              <span class="text-white text-lg font-bold">Win</span>
             </div>
           </div>
           <div
@@ -247,21 +218,6 @@
                 </select>
               </div>
             </div>
-            <div
-              v-if="court.teams[1].result && court.teams[1].result !== '-'"
-              class="mt-2"
-            >
-              <span
-                class="text-white px-2 py-1 rounded text-xs font-semibold"
-                :class="
-                  court.teams[1].result === 'win'
-                    ? 'bg-green-700'
-                    : 'bg-red-700'
-                "
-              >
-                {{ court.teams[1].result }}
-              </span>
-            </div>
           </div>
         </div>
         <div class="mt-4 flex gap-2">
@@ -274,7 +230,8 @@
           </button>
           <div
             v-if="
-              court.teams[0].result === '-' || court.teams[1].result === '-'
+              court.status === 'not done' &&
+              (court.teams[0].result === '-' || court.teams[1].result === '-')
             "
             class="bg-white border border-red-600 px-4 py-2 rounded-full font-semibold text-sm text-red-600"
           >
@@ -282,6 +239,16 @@
               class="animate-ping inline-block w-2 h-2 bg-red-600 rounded-full mr-2"
             ></span>
             Match in Progress
+          </div>
+          <div
+            v-if="
+              court.status === 'not done' &&
+              (court.teams[0].result === '-' || court.teams[1].result === '-')
+            "
+            @click="setTeamDone(idx)"
+            class="bg-white border border-gray-200 px-4 py-2 rounded-full font-semibold cursor-pointer hover:bg-blue-600 hover:text-white text-sm"
+          >
+            Done
           </div>
         </div>
       </div>
@@ -365,7 +332,7 @@ function isPlayerAssigned(playerId, courtIdx, teamIdx, playerIdx) {
   );
 }
 
-function canShowWinButton(court, teamIdx) {
+function canShowDoneButton(court, teamIdx) {
   return (
     court.status === "not done" &&
     court.teams[teamIdx].result === "-" &&
@@ -434,15 +401,13 @@ async function updateShuttlecockInDB(idx) {
   }
 }
 
-async function setTeamResult(idx, teamIdx, result) {
-  courts.value[idx].teams[teamIdx].result = result;
-  const otherTeamIdx = teamIdx === 0 ? 1 : 0;
-  courts.value[idx].teams[otherTeamIdx].result =
-    result === "win" ? "lose" : "win";
+function setTeamDone(idx) {
   courts.value[idx].status = "done";
-  await addMatchToFirebase(courts.value[idx]);
-  await addToCollect(courts.value[idx]);
-  await updatePlayersDailyStats(
+  courts.value[idx].teams[0].result = "";
+  courts.value[idx].teams[1].result = "";
+  addMatchToFirebase(courts.value[idx]);
+  addToCollect(courts.value[idx]);
+  updatePlayersDailyStats(
     courts.value[idx].teams,
     courts.value[idx].matchCount,
     courts.value[idx].shuttlecockNumbers
@@ -480,7 +445,6 @@ async function updatePlayersDailyStats(teams, matchCount, shuttlecockNumbers) {
     ? shuttlecockNumbers.length
     : 0;
   for (const team of teams) {
-    const result = team.result;
     for (const playerId of team.players) {
       if (!playerId) continue;
       const playerRef = doc(db, "players", playerId);
@@ -500,18 +464,10 @@ async function updatePlayersDailyStats(teams, matchCount, shuttlecockNumbers) {
         const prevPrice =
           typeof statsForToday.price === "number" ? statsForToday.price : 0;
         const newPrice = getMatchPrice(newShuttlecockCount);
-        const winCount =
-          typeof statsForToday.win === "number" ? statsForToday.win : 0;
-        const loseCount =
-          typeof statsForToday.lose === "number" ? statsForToday.lose : 0;
         await updateDoc(playerRef, {
           [`dailyStats.${todayKey}.matches`]: newMatchesCount,
           [`dailyStats.${todayKey}.shuttlecock`]: newShuttlecockCount,
           [`dailyStats.${todayKey}.price`]: newPrice,
-          [`dailyStats.${todayKey}.win`]:
-            result === "win" ? winCount + 1 : winCount,
-          [`dailyStats.${todayKey}.lose`]:
-            result === "lose" ? loseCount + 1 : loseCount,
         });
       }
     }
@@ -612,6 +568,25 @@ async function addMatchToFirebase(courtData) {
       console.error("Error adding match:", error);
     }
   }
+}
+
+defineExpose({ addMatchToCourt });
+async function addMatchToCourt(match) {
+  const idx = courts.value.findIndex(
+    (court) =>
+      court.status === "not done" &&
+      court.teams[0].players.every((p) => !p) &&
+      court.teams[1].players.every((p) => !p)
+  );
+  if (idx === -1) {
+    alert("No available court!");
+    return;
+  }
+  courts.value[idx].teams = JSON.parse(JSON.stringify(match.teams));
+  courts.value[idx].status = "not done";
+  courts.value[idx].matchCount = (courts.value[idx].matchCount || 0) + 1;
+  await addMatchToFirebase(courts.value[idx]);
+  emitPlayingStatus();
 }
 </script>
 
