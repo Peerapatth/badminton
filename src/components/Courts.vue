@@ -570,6 +570,24 @@ async function addMatchToFirebase(courtData) {
   }
 }
 
+defineExpose({ addMatchToCourt });
+async function addMatchToCourt(match) {
+  const idx = courts.value.findIndex(
+    (court) =>
+      court.status === "not done" &&
+      court.teams[0].players.every((p) => !p) &&
+      court.teams[1].players.every((p) => !p)
+  );
+  if (idx === -1) {
+    alert("No available court!");
+    return;
+  }
+  courts.value[idx].teams = JSON.parse(JSON.stringify(match.teams));
+  courts.value[idx].status = "not done";
+  courts.value[idx].matchCount = (courts.value[idx].matchCount || 0) + 1;
+  await addMatchToFirebase(courts.value[idx]);
+  emitPlayingStatus();
+}
 </script>
 
 <style lang="scss" scoped>

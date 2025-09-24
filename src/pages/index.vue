@@ -6,10 +6,11 @@
       class="w-full h-full flex flex-col gap-4 p-4 sm:p-6 rounded-xl bg-white border border-gray-200"
     >
       <Courts
+        ref="courtsRef"
         :activePlayers="activePlayers"
         @updatePlayingStatus="handlePlayingStatus"
       />
-      <UpcomingMatches />
+      <UpcomingMatches @addToCourt="handleAddToCourt" />
       <Matches />
       <div
         class="w-full flex flex-col gap-4 p-4 sm:p-6 rounded-xl bg-white border border-gray-200"
@@ -90,6 +91,12 @@ import UpcomingMatches from "@/components/Upcoming.vue";
 
 const loading = ref(false);
 const activePlayers = ref([]);
+
+const courtsRef = ref(null);
+
+function handleAddToCourt(match) {
+  courtsRef.value?.addMatchToCourt(match);
+}
 
 function isActiveToday(player) {
   if (!player.activeDates || !Array.isArray(player.activeDates)) return false;
