@@ -2,7 +2,12 @@
   <div
     class="w-full flex flex-col gap-8 p-6 sm:p-8 rounded-xl bg-white border border-gray-200 shadow"
   >
-    <h2 class="text-lg font-semibold text-gray-800">Upcoming Matches</h2>
+    <h2 class="text-lg font-semibold text-gray-800">
+      <span
+        class="animate-ping inline-block w-2 h-2 bg-blue-600 rounded-full mr-2"
+      ></span>
+      Upcoming Matches
+    </h2>
     <div class="w-full h-[1px] bg-gray-200 -mt-4"></div>
     <ul
       v-if="upcomingMatches.length"
@@ -32,10 +37,10 @@
         </div>
         <div class="flex gap-2 justify-center mt-2">
           <button
-            @click="markDone(match.id)"
+            @click="addToCourt(match.id)"
             class="bg-white border border-gray-200 px-4 py-2 rounded-full font-medium cursor-pointer hover:bg-green-600 hover:text-white text-sm"
           >
-            Done
+            Add To Court
           </button>
           <button
             @click="deleteMatch(match.id)"
@@ -85,7 +90,17 @@
                   class="rounded max-w-60 outline-none text-center cursor-pointer text-sm"
                 >
                   <option value="">Select Player</option>
-                  <option v-for="p in activePlayers" :key="p.id" :value="p.id">
+                  <option
+                    v-for="p in activePlayers.filter(
+                      (ap) =>
+                        !unavailablePlayerIds.includes(ap.id) &&
+                        ap.id !== team1Player2 &&
+                        ap.id !== team2Player1 &&
+                        ap.id !== team2Player2
+                    )"
+                    :key="p.id"
+                    :value="p.id"
+                  >
                     {{ p.name }} ({{ p.level }})
                   </option>
                 </select>
@@ -113,7 +128,17 @@
                   class="rounded max-w-60 outline-none text-center cursor-pointer text-sm"
                 >
                   <option value="">Select Player</option>
-                  <option v-for="p in activePlayers" :key="p.id" :value="p.id">
+                  <option
+                    v-for="p in activePlayers.filter(
+                      (ap) =>
+                        !unavailablePlayerIds.includes(ap.id) &&
+                        ap.id !== team1Player1 &&
+                        ap.id !== team2Player1 &&
+                        ap.id !== team2Player2
+                    )"
+                    :key="p.id"
+                    :value="p.id"
+                  >
                     {{ p.name }} ({{ p.level }})
                   </option>
                 </select>
@@ -147,7 +172,17 @@
                   class="rounded max-w-60 outline-none text-center cursor-pointer text-sm"
                 >
                   <option value="">Select Player</option>
-                  <option v-for="p in activePlayers" :key="p.id" :value="p.id">
+                  <option
+                    v-for="p in activePlayers.filter(
+                      (ap) =>
+                        !unavailablePlayerIds.includes(ap.id) &&
+                        ap.id !== team1Player1 &&
+                        ap.id !== team1Player2 &&
+                        ap.id !== team2Player2
+                    )"
+                    :key="p.id"
+                    :value="p.id"
+                  >
                     {{ p.name }} ({{ p.level }})
                   </option>
                 </select>
@@ -175,7 +210,17 @@
                   class="rounded max-w-60 outline-none text-center cursor-pointer text-sm"
                 >
                   <option value="">Select Player</option>
-                  <option v-for="p in activePlayers" :key="p.id" :value="p.id">
+                  <option
+                    v-for="p in activePlayers.filter(
+                      (ap) =>
+                        !unavailablePlayerIds.includes(ap.id) &&
+                        ap.id !== team1Player1 &&
+                        ap.id !== team1Player2 &&
+                        ap.id !== team2Player1
+                    )"
+                    :key="p.id"
+                    :value="p.id"
+                  >
                     {{ p.name }} ({{ p.level }})
                   </option>
                 </select>
@@ -204,7 +249,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { db } from "@/firebase";
 import {
   collection,
@@ -217,6 +262,7 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
+const emit = defineEmits(["addToCourt"]);
 
 const upcomingMatches = ref([]);
 const activePlayers = ref([]);
@@ -228,6 +274,12 @@ const team1Player1 = ref("");
 const team1Player2 = ref("");
 const team2Player1 = ref("");
 const team2Player2 = ref("");
+
+const unavailablePlayerIds = computed(() =>
+  upcomingMatches.value.flatMap((match) =>
+    match.teams.flatMap((team) => team.players)
+  )
+);
 
 function isActiveOnSelectedDate(player) {
   if (!player.activeDates || !Array.isArray(player.activeDates)) return false;
@@ -264,8 +316,9 @@ onMounted(async () => {
   });
 });
 
-async function markDone(id) {
-  await updateDoc(doc(db, "matches", id), { status: "done" });
+async function addToCourt(id) {
+  emit("addToCourt", id);
+  await updateDoc(doc(db, "matches", id), { status: "not done" });
 }
 
 async function deleteMatch(id) {
@@ -282,40 +335,48 @@ function playerNameWithoutLevel(pid) {
   return p ? `${p.name}` : pid;
 }
 
-function getRandomPlayersByLevel(level, count) {
-  const filtered = activePlayers.value.filter((p) => p.level === level);
-  const selected = [];
-  const usedIndices = new Set();
-  while (selected.length < count && usedIndices.size < filtered.length) {
-    const idx = Math.floor(Math.random() * filtered.length);
-    if (!usedIndices.has(idx)) {
-      usedIndices.add(idx);
-      selected.push(filtered[idx]);
-    }
-  }
-  return selected;
-}
-
 function randomMatchByLevel() {
-  const levels = ["beginner", "intermediate", "advanced"];
-  const shuffled = levels.sort(() => Math.random() - 0.5);
-  const levelA = shuffled[0];
-  const levelB = shuffled[1];
+  const availablePlayers = activePlayers.value.filter(
+    (p) => !unavailablePlayerIds.value.includes(p.id)
+  );
+  if (availablePlayers.length < 4) {
+    alert("Not enough available players to form two teams.");
+    return;
+  }
+  let tries = 0;
+  let selected = [];
+  const levelOrder = { beginner: 1, intermediate: 2, advanced: 3 };
 
-  const playersA = getRandomPlayersByLevel(levelA, 2);
-  const playersB = getRandomPlayersByLevel(levelB, 2);
+  while (tries < 20) {
+    const shuffled = availablePlayers.slice().sort(() => Math.random() - 0.5);
+    selected = shuffled.slice(0, 4);
+    selected.sort((a, b) => levelOrder[a.level] - levelOrder[b.level]);
 
-  if (playersA.length < 2 || playersB.length < 2) {
+    const team1Levels = [selected[0].level, selected[3].level];
+    const team2Levels = [selected[1].level, selected[2].level];
+
+    const invalidTeam1 =
+      team1Levels.includes("beginner") && team1Levels.includes("advanced");
+    const invalidTeam2 =
+      team2Levels.includes("beginner") && team2Levels.includes("advanced");
+
+    if (!invalidTeam1 && !invalidTeam2) {
+      break;
+    }
+    tries++;
+  }
+
+  if (tries === 20) {
     alert(
-      `Not enough players at ${levelA} or ${levelB} level to form a balanced match.`
+      "Could not find a balanced match without beginner and advanced together."
     );
     return;
   }
 
-  team1Player1.value = playersA[0].id;
-  team1Player2.value = playersB[0].id;
-  team2Player1.value = playersA[1].id;
-  team2Player2.value = playersB[1].id;
+  team1Player1.value = selected[0].id;
+  team1Player2.value = selected[3].id;
+  team2Player1.value = selected[1].id;
+  team2Player2.value = selected[2].id;
 }
 
 async function addUpcomingMatch() {

@@ -1,5 +1,7 @@
 <template>
-  <div class="w-full min-h-screen bg-gray-100 flex justify-center items-start p-3">
+  <div
+    class="w-full min-h-screen bg-gray-100 flex justify-center items-start p-3"
+  >
     <div v-if="loading" class="flex justify-center items-center h-screen">
       <svg
         class="animate-spin h-8 w-8 text-blue-600"
@@ -114,7 +116,10 @@
                 </td>
                 <td class="px-6 py-2">
                   <div class="p-2 border rounded-lg min-w-38 border-gray-200">
-                    <div class="flex items-center gap-1">
+                    <div
+                      v-if="getDailyStat(player, 'payment')"
+                      class="flex items-center gap-1"
+                    >
                       <span
                         v-if="getDailyStat(player, 'payment') === 'not_paid'"
                         class="inline-block w-3 h-3 rounded-full bg-red-600"
@@ -132,6 +137,12 @@
                         <option value="promptpay">PromptPay</option>
                         <option value="cash">Cash</option>
                       </select>
+                    </div>
+                    <div
+                      v-else
+                      class="text-sm text-gray-400 mb-1 w-full text-center"
+                    >
+                      N/A
                     </div>
                   </div>
                 </td>
@@ -214,9 +225,7 @@
                       <span
                         class="w-11 h-5 flex items-center bg-gray-200 rounded-full p-1 transition-colors duration-200"
                         :class="
-                          isActiveOnSelectedDate(player)
-                            ? 'bg-green-500'
-                            : ''
+                          isActiveOnSelectedDate(player) ? 'bg-green-500' : ''
                         "
                       >
                         <span
@@ -228,10 +237,7 @@
                           "
                         ></span>
                       </span>
-                      <span
-                        class="ml-2 text-sm font-medium"
-                  
-                      >
+                      <span class="ml-2 text-sm font-medium">
                         {{
                           isActiveOnSelectedDate(player) ? "Active" : "Inactive"
                         }}
@@ -326,8 +332,11 @@ function formatDate(date) {
 }
 
 function getDateKey(date) {
-  // Use YYYY-MM-DD as key
-  return date ? date.toISOString().split("T")[0] : "";
+  if (!date) return "";
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function isActiveOnSelectedDate(player) {
@@ -363,6 +372,7 @@ const handleDate = (dateStr) => {
   selectedDate.value = new Date(dateStr);
   selectedDateDisplay.value = formatDate(selectedDate.value);
   fetchPlayers();
+  showSelectDate.value = false;
 };
 
 const addPlayer = async (playerData) => {
@@ -408,8 +418,6 @@ const updateStatus = async (player, newStatus) => {
       shuttlecock: 0,
       price: 0,
       payment: "not_paid",
-      win: 0,
-      lose: 0,
     };
   }
 
